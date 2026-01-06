@@ -1,0 +1,51 @@
+
+name: Fetch and Export Docker Images
+
+
+on:
+
+  workflow_dispatch:
+
+
+jobs:
+
+  export-images:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Pull required images
+
+        run: |
+
+          docker pull nikolaik/python-nodejs:python3.12-nodejs22
+
+          # 如果你确定不需要 ollama，可以删掉下一行
+
+          docker pull ollama/ollama:latest
+
+
+      - name: Save images to tar
+
+        run: |
+
+          docker save \
+
+            nikolaik/python-nodejs:python3.12-nodejs22 \
+
+            ollama/ollama:latest \
+
+            -o docker-images.tar
+
+
+      - name: Upload as artifact
+
+        uses: actions/upload-artifact@v4
+
+        with:
+
+          name: docker-images
+
+          path: docker-images.tar
+
